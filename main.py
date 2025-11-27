@@ -52,6 +52,11 @@ async def html_to_pdf(request: Request):
             "--enable-local-file-access",
             "--image-quality", "100",
             "--dpi", "150",
+            # Add these lines to control or remove margins:
+            "--margin-top", "10mm",
+            "--margin-bottom", "10mm",
+            "--margin-left", "10mm",
+            "--margin-right", "10mm",
             # "--quiet",  # you can uncomment to suppress stdout; keep commented for easier debugging
             html_path,
             pdf_path,
