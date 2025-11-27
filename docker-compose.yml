@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB_HASH: 2
+      PDF_OUTPUT_DIR: /data/pdfs
+    volumes:
+      - .:/code
+      - ./pdfs:/data/pdfs
+    ports:
+      - "8085:8000"
+    depends_on:
+      - redis
+
+  worker:
+    build: .
+    command: celery -A app.celery_app.celery worker --loglevel=info --concurrency=2
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      PDF_OUTPUT_DIR: /data/pdfs
+      WKHTML_BIN: /usr/bin/wkhtmltopdf
+    volumes:
+      - .:/code
+      - ./pdfs:/data/pdfs
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
