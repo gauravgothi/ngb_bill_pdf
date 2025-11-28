@@ -64,16 +64,16 @@ async def generate(request: Request):
     h = pdf_hash(body)
     hash_key = f"pdf_hash:{h}"
 
-    existing_job_id = r.get(hash_key)
-    if existing_job_id:
-        # Check Celery state
-        res = AsyncResult(existing_job_id, app=celery)
-        status = map_celery_state(res.state)
-        return {
-            "status": status,
-            "job_id": existing_job_id,
-            "cached": True,
-        }
+    # existing_job_id = r.get(hash_key)
+    # if existing_job_id:
+    #     # Check Celery state
+    #     res = AsyncResult(existing_job_id, app=celery)
+    #     status = map_celery_state(res.state)
+    #     return {
+    #         "status": status,
+    #         "job_id": existing_job_id,
+    #         "cached": True,
+    #     }
 
     # New job
     html = body.decode("utf-8")

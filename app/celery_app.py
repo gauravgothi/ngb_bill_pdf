@@ -2,6 +2,7 @@
 import os
 import tempfile
 import subprocess
+import shutil
 
 from celery import Celery
 
@@ -46,10 +47,9 @@ def generate_pdf(html: str, job_id: str) -> dict:
         cmd = [
             WKHTML_BIN,
             "--enable-local-file-access",
-            "--image-quality",
-            "100",
-            "--dpi",
-            "150",
+            "--image-quality","100",
+            "--dpi","150",
+            "--page-size", "A4",
             "--margin-top", "10mm",
             "--margin-bottom", "10mm",
             "--margin-left", "10mm",
@@ -74,6 +74,10 @@ def generate_pdf(html: str, job_id: str) -> dict:
             raise RuntimeError("wkhtmltopdf finished but output.pdf not found")
 
         final_path = os.path.join(PDF_OUTPUT_DIR, f"{job_id}.pdf")
-        os.replace(pdf_tmp, final_path)
+        
+        os.makedirs(PDF_OUTPUT_DIR, exist_ok=True)
+
+        # Cross-device safe move (will copy+delete if needed)
+        shutil.move(pdf_tmp, final_path)
 
         return {"pdf_path": final_path, "stdout": stdout[:500], "stderr": stderr[:500]}

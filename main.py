@@ -5,8 +5,10 @@
 # from fastapi.responses import FileResponse
 # from fastapi.middleware.cors import CORSMiddleware
 # import uvicorn
+# # from weasyprint import HTML,CSS
 
 # app = FastAPI(title="HTML to PDF (wkhtmltopdf)")
+# # app = FastAPI(title="HTML to PDF (WeasyPrint)")
 
 # # Optional: enable CORS if you call from browser / other origins
 # app.add_middleware(
@@ -17,7 +19,7 @@
 # )
 
 
-# @app.post("/html_to_pdf")
+# @app.post("/generate")
 # async def html_to_pdf(request: Request):
 #     """
 #     Accepts raw HTML in the request body (Content-Type: text/html).
@@ -38,7 +40,7 @@
 
 #     # create temporary folder and files
 #     with tempfile.TemporaryDirectory() as td:
-#         html_path = os.path.join(td, "bill2.html")
+#         html_path = os.path.join(td, "temp1.html")
 #         pdf_path = os.path.join("output.pdf")
 
 #         # write HTML to temp file
@@ -88,12 +90,35 @@
 #         # return the PDF file
 #         return FileResponse(path=pdf_path, media_type="application/pdf", filename="document.pdf")
 
+#     # try:
+#     #     pdf_bytes = HTML(string=html_content).write_pdf(stylesheets=[
+#     #             CSS(string="""
+#     #                 @page {
+#     #                     size: A4;
+#     #                     margin: 10mm;
+#     #                 }
+#     #                 body {
+#     #                     margin: 0;
+#     #                     padding: 0;
+#     #                 }
+#     #             """)
+#     #         ]
+#     #     )
+#     # except Exception as e:
+#     #     raise HTTPException(status_code=500, detail=f"WeasyPrint conversion error: {e}")
+
+#     return Response(
+#         content=pdf_bytes,
+#         media_type="application/pdf",
+#         headers={"Content-Disposition": "attachment; filename=document.pdf"}
+#     )
+
 
 # if __name__ == "__main__":
 #     uvicorn.run(
 #         "main:app",
 #         host="0.0.0.0",
-#         port=8085,
+#         port=8086,
 #         reload=True,
 #         log_level="debug"
 #     )

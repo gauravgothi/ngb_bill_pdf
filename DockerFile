@@ -1,12 +1,14 @@
-FROM python:3.13-slim
+FROM python:3.11-bullseye
 
-# Install wkhtmltopdf and dependencies
+# Install wkhtmltopdf and its dependencies from Debian repos
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends wkhtmltopdf && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends \
+        wkhtmltopdf \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /code
 
+# make sure this file exists in your project
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
